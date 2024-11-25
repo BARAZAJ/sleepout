@@ -1,51 +1,48 @@
+import { setLocalStorage } from "./utils.mjs";
+
+function productDetailsTemplate(product) {
+  return `<section class="product-detail"> <h3>${product.Brand.Name}</h3>
+    <h2 class="divider">${product.NameWithoutBrand}</h2>
+    <img
+      class="divider"
+      src="${product.Image}"
+      alt="${product.NameWithoutBrand}"
+    />
+    <p class="product-card__price">$${product.FinalPrice}</p>
+    <p class="product__color">${product.Colors[0].ColorName}</p>
+    <p class="product__description">
+    ${product.DescriptionHtmlSimple}
+    </p>
+    <div class="product-detail__add">
+      <button id="addToCart" data-id="${product.Id}">Add to Cart</button>
+    </div></section>`;
+}
+
 export default class ProductDetails {
-    constructor(productId, dataSource) {
-      this.productId = productId; // Product ID from the URL
-      this.product = {}; // To store product details
-      this.dataSource = dataSource; // Data source instance (ProductData)
-    }
-  
-    // Initialize the ProductDetails instance
-    async init() {
-      // Fetch product details and store in this.product
-      this.product = await this.dataSource.findProductById(this.productId);
-      // Render the product details to the DOM
-      this.renderProductDetails();
-      // Add event listener for the "Add to Cart" button
-      this.addAddToCartHandler();
-    }
-  
-    // Render product details to the HTML
-    renderProductDetails() {
-      // Locate the container for product details
-      const productDetailsContainer = document.getElementById('productDetails');
-      if (!this.product) {
-        productDetailsContainer.innerHTML = `<p>Product not found.</p>`;
-        return;
-      }
-      
-      // Generate product details HTML
-      productDetailsContainer.innerHTML = `
-        <h1>${this.product.Name}</h1>
-        <p>${this.product.Description}</p>
-        <p>Price: $${this.product.Price}</p>
-        <button id="addToCart" data-id="${this.product.Id}">Add to Cart</button>
-      `;
-    }
-  
-    // Add product to cart
-    addToCart() {
-      // Store the product in local storage
-      localStorage.setItem('so-cart', JSON.stringify(this.product));
-      alert(`${this.product.Name} has been added to your cart!`);
-    }
-  
-    // Attach the "Add to Cart" button event handler
-    addAddToCartHandler() {
-      const addToCartButton = document.getElementById('addToCart');
-      if (addToCartButton) {
-        addToCartButton.addEventListener('click', () => this.addToCart());
-      }
-    }
+  constructor(productId, dataSource) {
+    this.productId = productId;
+    this.product = {};
+    this.dataSource = dataSource;
   }
-  
+  async init() {
+    // use our datasource to get the details for the current product. findProductById will return a promise! use await or .then() to process it
+    this.product = await this.dataSource.findProductById(this.productId);
+    // once we have the product details we can render out the HTML
+    this.renderProductDetails("main");
+    // once the HTML is rendered we can add a listener to Add to Cart button
+    // Notice the .bind(this). Our callback will not work if we don't include that line. Review the readings from this week on 'this' to understand why.
+    document
+      .getElementById("addToCart")
+      .addEventListener("click", this.addToCart.bind(this));
+  }
+  addToCart() {
+    setLocalStorage("so-cart", this.product);
+  }
+  renderProductDetails(selector) {
+    const element = document.querySelector(selector);
+    element.insertAdjacentHTML(
+      "afterBegin",
+      productDetailsTemplate(this.product)
+    );
+  }
+}
