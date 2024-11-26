@@ -1,36 +1,9 @@
-import { getData } from "./ProductData.mjs";
+import { getParam } from "./utils.mjs";
+import ProductData from "./ProductData.mjs";
+import ProductDetails from "./ProductDetails.mjs";
 
-export function loadProductDetails() {
-    const urlParams = new URLSearchParams(window.location.search);
-    const productId = urlParams.get('product');
-    
-    if (!productId) {
-        document.getElementById('product-detail').innerHTML = '<h1>Product not found</h1>';
-        return;
-    }
+const dataSource = new ProductData("tents");
+const productId = getParam("product");
 
-    getData(`../json/tents.json`).then(products => {
-        const product = products.find(p => p.id == productId);
-        if (!product) {
-            document.getElementById('product-detail').innerHTML = '<h1>Product not found</h1>';
-            return;
-        }
-
-        document.getElementById('product-detail').innerHTML = `
-            <h1>${product.name}</h1>
-            <img src="../images/${product.image}" alt="${product.name}" />
-            <p>${product.description}</p>
-            <button onclick="addToCart(${product.id})">Add to Cart</button>
-        `;
-    }).catch(error => {
-        console.error('Error loading product details:', error);
-    });
-}
-
-function addToCart(productId) {
-    let cart = JSON.parse(localStorage.getItem('cart')) || [];
-    cart.push({ productId });
-    localStorage.setItem('cart', JSON.stringify(cart));
-    alert('Product added to cart!');
-}
-
+const product = new ProductDetails(productId, dataSource);
+product.init();

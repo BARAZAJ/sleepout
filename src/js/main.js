@@ -1,20 +1,8 @@
-import { getData } from "./ProductData.mjs";
+import ProductData from "./ProductData.mjs";
+import ProductList from "./ProductList.mjs";
 
-export function loadProducts() {
-    const productListElement = document.getElementById('product-list');
-    getData('json/tents.json').then(data => {
-        data.forEach(product => {
-            const productElement = document.createElement('div');
-            productElement.classList.add('product');
+const dataSource = new ProductData("tents");
+const element = document.querySelector(".product-list");
+const listing = new ProductList("Tents", dataSource, element);
 
-            productElement.innerHTML = `
-                <h3>${product.name}</h3>
-                <img src="../images/${product.image}" alt="${product.name}" />
-                <button onclick="location.href='product.html?product=${product.id}'">View Details</button>
-            `;
-            productListElement.appendChild(productElement);
-        });
-    }).catch(error => {
-        console.error('Error loading product data:', error);
-    });
-}
+listing.init();
