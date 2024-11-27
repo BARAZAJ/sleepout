@@ -1,23 +1,25 @@
-function convertToJson(res) {
-  if (res.ok) {
-    return res.json();
-  } else {
-    throw new Error("Bad Response");
-  }
+const products = [
+  {
+    id: '1',
+    name: 'Ajax Tent - 3-Person',
+    price: '$199.99',
+    image: '/images/tents/ajax-tent.jpg',
+    detailPage: true,
+  },
+  {
+    id: '2',
+    name: 'Talus Tent - 4-Person',
+    price: '$249.99',
+    image: '/images/tents/talus-tent.jpg',
+    detailPage: true,
+  },
+];
+
+export function fetchProducts() {
+  return Promise.resolve(products);
 }
 
-export default class ProductData {
-  constructor(category) {
-    this.category = category;
-    this.path = `../json/${this.category}.json`;
-  }
-  getData() {
-    return fetch(this.path)
-      .then(convertToJson)
-      .then((data) => data);
-  }
-  async findProductById(id) {
-    const products = await this.getData();
-    return products.find((item) => item.Id === id);
-  }
+export function fetchProductById(id) {
+  return Promise.resolve(products.find(product => product.id === id));
 }
+
