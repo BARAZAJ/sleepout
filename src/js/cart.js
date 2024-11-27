@@ -1,19 +1,23 @@
-import { getCartItems } from './cartUtils.mjs';
+import { getLocalStorage } from "./utils.mjs";
 
-const cartList = document.getElementById('cart-list');
+const productList = document.querySelector(".product-list");
+const emptyCartMessage = document.querySelector(".empty-cart-message");
 
-// Fetch and display cart items
-function displayCart() {
-  const cartItems = getCartItems();
-  if (cartItems.length > 0) {
-    cartItems.forEach(item => {
-      const listItem = document.createElement('li');
-      listItem.textContent = `${item.name} - ${item.price}`;
-      cartList.appendChild(listItem);
-    });
-  } else {
-    cartList.innerHTML = '<p>Your cart is empty.</p>';
-  }
+const cartItems = getLocalStorage("so-cart") || [];
+
+if (cartItems.length === 0) {
+  emptyCartMessage.style.display = "block";
+} else {
+  emptyCartMessage.style.display = "none";
+  cartItems.forEach((item) => {
+    const li = document.createElement("li");
+    li.className = "cart-card";
+    li.innerHTML = `
+      <img src="${item.Image}" alt="${item.Name}" />
+      <h2>${item.Name}</h2>
+      <p>$${item.FinalPrice}</p>
+    `;
+    productList.appendChild(li);
+  });
 }
 
-displayCart();

@@ -1,19 +1,21 @@
-const products = [
-  {
-    id: '1',
-    name: 'Ajax Tent - 3-Person',
-    price: '$199.99',
-    image: '/images/tents/ajax-tent.jpg',
-    detailPage: true,
-  },
-  {
-    id: '2',
-    name: 'Talus Tent - 4-Person',
-    price: '$249.99',
-    image: '/images/tents/talus-tent.jpg',
-    detailPage: true,
-  },
-];
+export default class ProductData {
+  constructor(category) {
+    this.category = category;
+    this.path = `/json/${category}.json`;
+  }
+
+  async getData() {
+    const response = await fetch(this.path);
+    if (!response.ok) throw new Error("Failed to fetch data");
+    return await response.json();
+  }
+
+  async findProductById(id) {
+    const products = await this.getData();
+    return products.find((product) => product.Id === id);
+  }
+}
+
 
 export function fetchProducts() {
   return Promise.resolve(products);

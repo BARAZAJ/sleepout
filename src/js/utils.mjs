@@ -1,11 +1,13 @@
-export function renderProductCard(product) {
-  const listItem = document.createElement('li');
-  listItem.innerHTML = `
-    <a href="product.html?id=${product.id}">
-      <img src="${product.image}" alt="${product.name}">
-      <h3>${product.name}</h3>
-      <p>${product.price}</p>
-    </a>
-  `;
-  return listItem;
+export function getLocalStorage(key) {
+  return JSON.parse(localStorage.getItem(key));
+}
+
+export function setLocalStorage(key, data) {
+  localStorage.setItem(key, JSON.stringify(data));
+}
+
+export function getParam(param) {
+  const queryString = window.location.search;
+  const urlParams = new URLSearchParams(queryString);
+  return urlParams.get(param);
 }
