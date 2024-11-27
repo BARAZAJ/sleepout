@@ -4,6 +4,11 @@ const dataSource = new ProductData("tents");
 const productList = document.querySelector(".product-list");
 
 dataSource.getData().then((products) => {
+  if (!products || products.length === 0) {
+    console.error("No products found");
+    return;
+  }
+
   products.forEach((product) => {
     const item = document.createElement("li");
     item.className = "product-card";
@@ -16,8 +21,7 @@ dataSource.getData().then((products) => {
       </a>`;
     productList.appendChild(item);
   });
-});
-dataSource.getData().then((products) => {
-  console.log(products); // Check if products are fetched correctly
+}).catch((error) => {
+  console.error("Error fetching products:", error);
 });
 
