@@ -17,3 +17,7 @@ dataSource.getData().then((products) => {
     productList.appendChild(item);
   });
 });
+dataSource.getData().then((products) => {
+  console.log(products); // Check if products are fetched correctly
+});
+
